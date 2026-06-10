@@ -1,0 +1,361 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────── Enums ───────────────────────────────
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  CREATIVE
+  EDITOR
+  SOCIAL_MEDIA
+  VIEWER
+}
+
+enum ClientStatus {
+  NEW_LEAD
+  IN_NEGOTIATION
+  ACTIVE_CLIENT
+  WAITING_RESPONSE
+  RECURRING
+  FINISHED
+}
+
+enum ProjectStatus {
+  BRIEFING_RECEIVED
+  PRE_PRODUCTION
+  SHOOTING_SCHEDULED
+  EDITING
+  WAITING_APPROVAL
+  APPROVED
+  DELIVERED
+  FINISHED
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  IN_REVIEW
+  WAITING_CLIENT
+  COMPLETED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum DeadlineStatus {
+  PENDING
+  COMPLETED
+  OVERDUE
+}
+
+enum EventType {
+  MEETING
+  SHOOTING
+  DELIVERY
+  REVIEW
+  POSTING
+  INTERNAL
+}
+
+enum IntegrationProvider {
+  GOOGLE_CALENDAR
+  GMAIL
+  GOOGLE_DRIVE
+  INSTAGRAM_META
+  WHATSAPP_BUSINESS
+  OPENAI
+  MCP
+  MANOS_AI
+}
+
+enum IntegrationStatus {
+  CONNECTED
+  DISCONNECTED
+  ERROR
+}
+
+enum PerformanceStatus {
+  TOP_PERFORMING
+  AVERAGE
+  NEEDS_IMPROVEMENT
+}
+
+// ─────────────────────────────── Models ───────────────────────────────
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  avatarUrl    String?
+  role         UserRole @default(VIEWER)
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  createdProjects Project[]       @relation("ProjectCreatedBy")
+  assignedTasks   Task[]          @relation("TaskAssignee")
+  createdTasks    Task[]          @relation("TaskCreatedBy")
+  comments        Comment[]
+  files           File[]
+  calendarEvents  CalendarEvent[]
+  notifications   Notification[]
+  activityLogs    ActivityLog[]
+  integrations    Integration[]
+
+  @@map("users")
+}
+
+model Client {
+  id          String       @id @default(cuid())
+  name        String
+  companyName String?
+  email       String?
+  phone       String?
+  instagram   String?
+  status      ClientStatus @default(NEW_LEAD)
+  notes       String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  projects         Project[]
+  calendarEvents   CalendarEvent[]
+  instagramMetrics InstagramMetrics[]
+
+  @@map("clients")
+}
+
+model Project {
+  id            String        @id @default(cuid())
+  clientId      String
+  name          String
+  description   String?
+  type          String?
+  status        ProjectStatus @default(BRIEFING_RECEIVED)
+  priority      Priority?
+  startDate     DateTime?
+  deadline      DateTime?
+  progress      Int           @default(0)
+  coverImageUrl String?
+  createdBy     String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  client           Client             @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  creator          User               @relation("ProjectCreatedBy", fields: [createdBy], references: [id])
+  tasks            Task[]
+  deadlines        Deadline[]
+  comments         Comment[]
+  files            File[]
+  calendarEvents   CalendarEvent[]
+  instagramMetrics InstagramMetrics[]
+
+  @@index([clientId])
+  @@index([status])
+  @@map("projects")
+}
+
+model Task {
+  id          String     @id @default(cuid())
+  projectId   String
+  assignedTo  String?
+  title       String
+  description String?
+  status      TaskStatus @default(TODO)
+  priority    Priority   @default(MEDIUM)
+  dueDate     DateTime?
+  completedAt DateTime?
+  createdBy   String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  project  Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assignee User?     @relation("TaskAssignee", fields: [assignedTo], references: [id], onDelete: SetNull)
+  creator  User      @relation("TaskCreatedBy", fields: [createdBy], references: [id])
+  comments Comment[]
+
+  @@index([projectId])
+  @@index([assignedTo])
+  @@index([status])
+  @@map("tasks")
+}
+
+model Deadline {
+  id          String         @id @default(cuid())
+  projectId   String
+  title       String
+  description String?
+  dueDate     DateTime
+  priority    Priority       @default(MEDIUM)
+  status      DeadlineStatus @default(PENDING)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@map("deadlines")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  projectId String
+  taskId    String?
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  task    Task?   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([taskId])
+  @@map("comments")
+}
+
+model File {
+  id         String   @id @default(cuid())
+  projectId  String
+  uploadedBy String
+  fileName   String
+  fileUrl    String
+  fileType   String?
+  fileSize   Int?
+  createdAt  DateTime @default(now())
+
+  project  Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  uploader User    @relation(fields: [uploadedBy], references: [id])
+
+  @@index([projectId])
+  @@map("files")
+}
+
+model CalendarEvent {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  startDate   DateTime
+  endDate     DateTime
+  type        EventType @default(MEETING)
+  projectId   String?
+  clientId    String?
+  location    String?
+  createdBy   String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  project Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  client  Client?  @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  creator User     @relation(fields: [createdBy], references: [id])
+
+  @@index([startDate])
+  @@map("calendar_events")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  type      String?
+  isRead    Boolean  @default(false)
+  actionUrl String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+model Metrics {
+  id                 String   @id @default(cuid())
+  period             String
+  projectsCompleted  Int      @default(0)
+  tasksCompleted     Int      @default(0)
+  tasksLate          Int      @default(0)
+  avgDeliveryTime    Float    @default(0)
+  clientSatisfaction Float    @default(0)
+  revenueImpact      Float    @default(0)
+  createdAt          DateTime @default(now())
+
+  @@map("metrics")
+}
+
+model InstagramMetrics {
+  id                String            @id @default(cuid())
+  clientId          String?
+  projectId         String?
+  postName          String
+  postType          String
+  views             Int               @default(0)
+  likes             Int               @default(0)
+  comments          Int               @default(0)
+  shares            Int               @default(0)
+  saves             Int               @default(0)
+  engagementRate    Float             @default(0)
+  performanceStatus PerformanceStatus @default(AVERAGE)
+  postDate          DateTime
+  createdAt         DateTime          @default(now())
+
+  client  Client?  @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  project Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  @@index([clientId])
+  @@map("instagram_metrics")
+}
+
+model AISummary {
+  id               String   @id @default(cuid())
+  type             String
+  relatedProjectId String?
+  content          String
+  generatedBy      String
+  createdAt        DateTime @default(now())
+
+  @@index([relatedProjectId])
+  @@map("ai_summaries")
+}
+
+model Integration {
+  id           String              @id @default(cuid())
+  provider     IntegrationProvider @unique
+  status       IntegrationStatus   @default(DISCONNECTED)
+  accessToken  String?
+  refreshToken String?
+  expiresAt    DateTime?
+  connectedBy  String?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  connector User? @relation(fields: [connectedBy], references: [id], onDelete: SetNull)
+
+  @@map("integrations")
+}
+
+model ActivityLog {
+  id         String   @id @default(cuid())
+  userId     String
+  action     String
+  entityType String
+  entityId   String
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([entityType, entityId])
+  @@map("activity_logs")
+}
