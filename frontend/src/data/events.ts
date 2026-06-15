@@ -1,0 +1,175 @@
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  date: string; // YYYY-MM-DD
+  startTime: string;
+  endTime: string;
+  type: "meeting" | "shooting" | "deadline" | "delivery" | "posting" | "internal";
+  projectName?: string;
+  location?: string;
+}
+
+export const eventTypeConfig: Record<
+  CalendarEvent["type"],
+  { label: string; dot: string; bg: string; text: string }
+> = {
+  meeting: { label: "Meeting", dot: "bg-blue-400", bg: "bg-blue-400/10 border-blue-400/20", text: "text-blue-300" },
+  shooting: { label: "Shoot", dot: "bg-pink-400", bg: "bg-pink-400/10 border-pink-400/20", text: "text-pink-300" },
+  deadline: { label: "Deadline", dot: "bg-red-400", bg: "bg-red-400/10 border-red-400/20", text: "text-red-300" },
+  delivery: { label: "Delivery", dot: "bg-green-400", bg: "bg-green-400/10 border-green-400/20", text: "text-green-300" },
+  posting: { label: "Posting", dot: "bg-yellow-400", bg: "bg-yellow-400/10 border-yellow-400/20", text: "text-yellow-300" },
+  internal: { label: "Internal", dot: "bg-primary-400", bg: "bg-primary/10 border-primary/20", text: "text-primary-300" },
+};
+
+export const events: CalendarEvent[] = [
+  {
+    id: "ev-001",
+    title: "Briefing Horizon Studio",
+    date: "2024-07-25",
+    startTime: "10:00",
+    endTime: "11:00",
+    type: "meeting",
+    location: "Google Meet",
+  },
+  {
+    id: "ev-002",
+    title: "Creative Review - Nova Foods",
+    date: "2024-07-17",
+    startTime: "14:00",
+    endTime: "15:00",
+    type: "meeting",
+    projectName: "Nova Social Campaign",
+    location: "Office - Room 2",
+  },
+  {
+    id: "ev-003",
+    title: "TechStart Pitch Deck Final",
+    date: "2024-07-20",
+    startTime: "18:00",
+    endTime: "18:00",
+    type: "deadline",
+    projectName: "TechStart Pitch Deck",
+  },
+  {
+    id: "ev-004",
+    title: "Apex Brand Film First Cut",
+    date: "2024-07-22",
+    startTime: "17:00",
+    endTime: "17:00",
+    type: "deadline",
+    projectName: "Apex Brand Film",
+  },
+  {
+    id: "ev-005",
+    title: "Product Photo Session",
+    date: "2024-07-28",
+    startTime: "09:00",
+    endTime: "16:00",
+    type: "shooting",
+    projectName: "After Drinks Content Pack",
+    location: "Studio A",
+  },
+  {
+    id: "ev-006",
+    title: "Nova Reels Batch 1 Delivery",
+    date: "2024-07-25",
+    startTime: "12:00",
+    endTime: "12:00",
+    type: "delivery",
+    projectName: "Nova Social Campaign",
+  },
+  {
+    id: "ev-007",
+    title: "IG Post - Luxe Summer Drop",
+    date: "2024-07-19",
+    startTime: "11:00",
+    endTime: "11:30",
+    type: "posting",
+    projectName: "Luxe.co Website",
+  },
+  {
+    id: "ev-008",
+    title: "Weekly Team Sync",
+    date: "2024-07-22",
+    startTime: "09:30",
+    endTime: "10:15",
+    type: "internal",
+    location: "Office - Main Room",
+  },
+  {
+    id: "ev-009",
+    title: "Luxe.co Wireframe Approval",
+    date: "2024-07-23",
+    startTime: "15:00",
+    endTime: "16:00",
+    type: "meeting",
+    projectName: "Luxe.co Website",
+    location: "Google Meet",
+  },
+  {
+    id: "ev-010",
+    title: "IG Post - Apex Teaser 02",
+    date: "2024-07-24",
+    startTime: "18:00",
+    endTime: "18:30",
+    type: "posting",
+    projectName: "Apex Brand Film",
+  },
+  {
+    id: "ev-011",
+    title: "Luxe.co Website Launch",
+    date: "2024-08-05",
+    startTime: "10:00",
+    endTime: "10:00",
+    type: "delivery",
+    projectName: "Luxe.co Website",
+  },
+  {
+    id: "ev-012",
+    title: "Editing Day - Brand Film",
+    date: "2024-07-18",
+    startTime: "09:00",
+    endTime: "18:00",
+    type: "internal",
+    projectName: "Apex Brand Film",
+    location: "Edit Suite 1",
+  },
+  {
+    id: "ev-013",
+    title: "Drone Shoot - Apex Exteriors",
+    date: "2024-07-19",
+    startTime: "07:00",
+    endTime: "12:00",
+    type: "shooting",
+    projectName: "Apex Brand Film",
+    location: "Apex HQ Rooftop",
+  },
+  {
+    id: "ev-014",
+    title: "Monthly Retro + Planning",
+    date: "2024-07-31",
+    startTime: "14:00",
+    endTime: "16:00",
+    type: "internal",
+    location: "Office - Main Room",
+  },
+  {
+    id: "ev-015",
+    title: "After Drinks Strategy Call",
+    date: "2024-07-24",
+    startTime: "10:00",
+    endTime: "11:00",
+    type: "meeting",
+    projectName: "After Drinks Content Pack",
+    location: "Google Meet",
+  },
+  {
+    id: "ev-016",
+    title: "Nova Campaign First Batch",
+    date: "2024-07-25",
+    startTime: "17:00",
+    endTime: "17:00",
+    type: "deadline",
+    projectName: "Nova Social Campaign",
+  },
+];

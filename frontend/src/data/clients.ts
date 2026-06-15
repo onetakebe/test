@@ -1,0 +1,147 @@
+export interface Client {
+  id: string;
+  name: string;
+  company: string;
+  email: string;
+  phone: string;
+  instagram: string;
+  status: "active" | "inactive" | "prospect" | "vip";
+  activeProjects: number;
+  totalProjects: number;
+  lastActivity: string;
+  avatar: string;
+  initials: string;
+  color: string;
+  notes: string;
+  joinedDate: string;
+  totalRevenue: string;
+}
+
+export const clients: Client[] = [
+  {
+    id: "client-001",
+    name: "Ricardo Apex",
+    company: "Apex Corp",
+    email: "ricardo@apexcorp.com.br",
+    phone: "+55 11 9 8765-4321",
+    instagram: "@apexcorp",
+    status: "vip",
+    activeProjects: 1,
+    totalProjects: 4,
+    lastActivity: "2024-07-18",
+    avatar: "",
+    initials: "RA",
+    color: "#7D33FF",
+    notes: "Cliente VIP desde 2022. Prefere comunicação via WhatsApp.",
+    joinedDate: "2022-03-15",
+    totalRevenue: "R$ 185.000",
+  },
+  {
+    id: "client-002",
+    name: "Sofia Luxe",
+    company: "Luxe Brands",
+    email: "sofia@luxebrands.com",
+    phone: "+55 11 9 9876-5432",
+    instagram: "@luxebrands",
+    status: "active",
+    activeProjects: 1,
+    totalProjects: 2,
+    lastActivity: "2024-07-17",
+    avatar: "",
+    initials: "SL",
+    color: "#FF3366",
+    notes: "Muito atenta aos detalhes de design. Revisar sempre antes de apresentar.",
+    joinedDate: "2023-08-01",
+    totalRevenue: "R$ 92.500",
+  },
+  {
+    id: "client-003",
+    name: "Marcos Nova",
+    company: "Nova Foods",
+    email: "marcos@novafoods.com.br",
+    phone: "+55 21 9 8543-6789",
+    instagram: "@novafoods_br",
+    status: "active",
+    activeProjects: 1,
+    totalProjects: 3,
+    lastActivity: "2024-07-16",
+    avatar: "",
+    initials: "MN",
+    color: "#FFB700",
+    notes: "Foco em performance de Instagram. Valoriza métricas de engajamento.",
+    joinedDate: "2022-11-20",
+    totalRevenue: "R$ 134.000",
+  },
+  {
+    id: "client-004",
+    name: "Beatriz After",
+    company: "After Drinks Co",
+    email: "beatriz@afterdrinks.com",
+    phone: "+55 11 9 7654-3210",
+    instagram: "@afterdrinks",
+    status: "active",
+    activeProjects: 1,
+    totalProjects: 1,
+    lastActivity: "2024-07-15",
+    avatar: "",
+    initials: "BA",
+    color: "#00C8FF",
+    notes: "Novo cliente. Em fase de planejamento do projeto inicial.",
+    joinedDate: "2024-07-01",
+    totalRevenue: "R$ 28.000",
+  },
+  {
+    id: "client-005",
+    name: "Lucas Tech",
+    company: "TechStart",
+    email: "lucas@techstart.io",
+    phone: "+55 11 9 5432-1098",
+    instagram: "@techstart.io",
+    status: "active",
+    activeProjects: 1,
+    totalProjects: 1,
+    lastActivity: "2024-07-18",
+    avatar: "",
+    initials: "LT",
+    color: "#00C896",
+    notes: "Startup em fase de captação. Projeto urgente para pitch de investidores.",
+    joinedDate: "2024-06-15",
+    totalRevenue: "R$ 15.000",
+  },
+  {
+    id: "client-006",
+    name: "Carolina Fresh",
+    company: "FreshMart",
+    email: "carolina@freshmart.com.br",
+    phone: "+55 31 9 9876-5432",
+    instagram: "@freshmart",
+    status: "inactive",
+    activeProjects: 0,
+    totalProjects: 2,
+    lastActivity: "2024-07-01",
+    avatar: "",
+    initials: "CF",
+    color: "#FF6B35",
+    notes: "Projeto concluído. Aguardando novo briefing para Q4.",
+    joinedDate: "2023-01-10",
+    totalRevenue: "R$ 67.000",
+  },
+  {
+    id: "client-007",
+    name: "Pedro Prospect",
+    company: "Horizon Studio",
+    email: "pedro@horizonstudio.com",
+    phone: "+55 11 9 1234-5678",
+    instagram: "@horizonstudio",
+    status: "prospect",
+    activeProjects: 0,
+    totalProjects: 0,
+    lastActivity: "2024-07-10",
+    avatar: "",
+    initials: "PP",
+    color: "#9148ff",
+    notes: "Prospect quente. Reunião de briefing agendada para 25/07.",
+    joinedDate: "2024-07-10",
+    totalRevenue: "R$ 0",
+  },
+];
